@@ -4,9 +4,5 @@
 <dict>
 	<key>com.apple.application-identifier</key>
 	<string>com.parallels.toolbox.EncryptFiles</string>
-	<key>keychain-access-groups</key>
-	<array>
-		<string>com.parallels.toolbox.EncryptFiles</string>
-	</array>
 </dict>
 </plist>

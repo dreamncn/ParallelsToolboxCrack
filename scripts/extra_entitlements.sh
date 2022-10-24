@@ -13,6 +13,7 @@ function export_entitlements() {
     codesign -d --entitlements - --xml "$1" 2>/dev/null | plutil -convert xml1 -o - - > "$2"
     /usr/libexec/PlistBuddy -c "Delete :com.apple.security.application-groups" "$2" 2>/dev/null
     /usr/libexec/PlistBuddy -c "Delete :com.apple.developer.team-identifier" "$2" 2>/dev/null
+    /usr/libexec/PlistBuddy -c "Delete :keychain-access-groups" "$2" 2>/dev/null
     sed -i "" "s/4C6364ACXT\.//g" "$2"
 }
 

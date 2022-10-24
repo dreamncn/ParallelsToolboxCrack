@@ -21,8 +21,11 @@ PTFM_DMG_FILE="${TEMP_PATH}/download/ParallelsToolbox-${PTFM_VERSION}.dmg"
 
 PTFM_PUBLISH_FILE="${PUBLISH_PATH}/ParallelsToolbox-${PTFM_VERSION}_Crack.dmg"
 
-# CODESIGN_CERT=73B34EBEE504D5CEE35B113A22CEBFD381A21033
 CODESIGN_CERT=-
+
+if [ -n "$(security find-identity -v -p codesigning | grep 73B34EBEE504D5CEE35B113A22CEBFD381A21033)" ]; then
+	CODESIGN_CERT=73B34EBEE504D5CEE35B113A22CEBFD381A21033
+fi
 
 PTFM_TMP_DIR="${TEMP_PATH}/ptfm_files"
 
@@ -86,6 +89,9 @@ function sign_ptfm_application() {
 	IFS=$'\n'
 	for name in $(ls "${PTFM_TMP_DIR}/Install Parallels Toolbox.app/Contents/Applications/")
 	do
+		if [ -f "${PTFM_TMP_DIR}/Install Parallels Toolbox.app/Contents/Applications/${name}/Contents/embedded.provisionprofile" ]; then
+			rm -f "${PTFM_TMP_DIR}/Install Parallels Toolbox.app/Contents/Applications/${name}/Contents/embedded.provisionprofile" > /dev/null
+		fi
 		sign_cmd "${PTFM_TMP_DIR}/Install Parallels Toolbox.app/Contents/Applications/${name}"
 	done
 	IFS=oldIFS
@@ -94,6 +100,9 @@ function sign_ptfm_application() {
 function sign_ptfm() {
 	echo "[*] Sign Parallels Toolbox App"
 	sign_ptfm_application
+	if [ -f "${PTFM_TMP_DIR}/Install Parallels Toolbox.app/Contents/embedded.provisionprofile" ]; then
+		rm -f "${PTFM_TMP_DIR}/Install Parallels Toolbox.app/Contents/embedded.provisionprofile" > /dev/null
+	fi
 	sign_cmd "${PTFM_TMP_DIR}/Install Parallels Toolbox.app/Contents/Library/Install/ToolboxInstaller"
 	sign_cmd "${PTFM_TMP_DIR}/Install Parallels Toolbox.app"
 }
