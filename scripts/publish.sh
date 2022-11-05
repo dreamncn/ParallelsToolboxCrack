@@ -11,9 +11,9 @@ ROOT_PATH=$(
 TEMP_PATH="${ROOT_PATH}/tmp"
 PUBLISH_PATH="${ROOT_PATH}/publish"
 
-PTFM_VERSION="6.0.0-4536"
+PTFM_VERSION="6.0.1-4541"
 
-PTFM_SHA256SUM="491d3739422988fda6934b4fc4dc1334b6dfea86802da56d55a6ea56dadb4910"
+PTFM_SHA256SUM="0229e670bad744a02c5349ab1bf31aa7ba8dff52840b9d410ce599b350f61aa6"
 
 PTFM_DMG_DOWNLOAD_URL="https://download.parallels.com/toolbox/v6/${PTFM_VERSION}/ParallelsToolbox-${PTFM_VERSION}.dmg"
 
@@ -41,6 +41,11 @@ function sign_cmd() {
 }
 
 function ensure_download_ptfm_dmg() {
+	if [ ! -f "${PTFM_DMG_FILE}" ]; then
+		echo "[*] Download ${PTFM_DMG_DOWNLOAD_URL}"
+		mkdir -p $(dirname "${PTFM_DMG_FILE}")
+		curl -L --progress-bar -o "${PTFM_DMG_FILE}" "${PTFM_DMG_DOWNLOAD_URL}"
+	fi
 	if [ -f "${PTFM_DMG_FILE}" ]; then
 		echo "[*] Check hash for \"${PTFM_DMG_FILE}\""
 		FILE_HASH=$(shasum -a 256 -b "${PTFM_DMG_FILE}" | awk '{print $1}')
@@ -49,11 +54,6 @@ function ensure_download_ptfm_dmg() {
 			echo "[*] Delete \"${PTFM_DMG_FILE}\""
 			rm -f "${PTFM_DMG_FILE}"
 		fi
-	fi
-	if [ ! -f "${PTFM_DMG_FILE}" ]; then
-		echo "[*] Download ${PTFM_DMG_DOWNLOAD_URL}"
-		mkdir -p $(dirname "${PTFM_DMG_FILE}")
-		curl -L --progress-bar -o "${PTFM_DMG_FILE}" "${PTFM_DMG_DOWNLOAD_URL}"
 	fi
 }
 
